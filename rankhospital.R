@@ -1,5 +1,5 @@
 
-rankhospital <- function(state = 'TX', outcome = 'heart failure', num = "worst" ) {
+rankhospital <- function(state = 'TX', outcome = 'heart attack', num ) {
     library(data.table)
     library(dplyr)
     
@@ -48,38 +48,53 @@ rankhospital <- function(state = 'TX', outcome = 'heart failure', num = "worst" 
     # min if else 
     if (outcome == 'heart attack'){
     care_measures_data_2 <- care_measures_data_2[order(State , `heart attack`)]
-    if(num == "best"){
-            care_measures_data_2 <- care_measures_data_2[order(State , `heart attack`)]
-            care_measures_data_2 <- care_measures_data_2[,Rank := round(frank(`heart attack`) , 0), by = .(State)]
+    care_measures_data_2 <- care_measures_data_2[order(State , `heart attack`)]
+    care_measures_data_2 <- care_measures_data_2[,Rank := round(frank(`heart attack`) , 0), by = .(State)]
+    care_measures_data_2 <- care_measures_data_2[order(Rank)]
+    if( num == 'best'){
+        outcome_final <-  head(care_measures_data_2[Rank == 1,] , 1)
+    }else if(num == "worst"){
+        outcome_final <-  head(care_measures_data_2[Rank == max(care_measures_data_2$Rank),] , 1)
+        
     }else{
-        care_measures_data_2 <- care_measures_data_2[order(State , - `heart attack`)]
-        care_measures_data_2 <- care_measures_data_2[,Rank := round(frank(`heart attack`) , 0), by = .(State)]
+        outcome_final <-  head(care_measures_data_2[Rank == num,] , 1)
         
     }
+   
     
-    outcome_final <-  head(care_measures_data_2 , 4)
     } else if (outcome == 'heart failure'){
+       
         care_measures_data_2 <- care_measures_data_2[order(State , `heart failure`)]
-        if(num == "best"){
-            care_measures_data_2 <- care_measures_data_2[order(State , `heart failure`)]
-            care_measures_data_2 <- care_measures_data_2[,Rank := round(frank(`heart failure`) , 0), by = .(State)]
-        }else{
-            care_measures_data_2 <- care_measures_data_2[order(State , - `heart failure`)]
-            care_measures_data_2 <- care_measures_data_2[,Rank := round(frank(`heart failure`) , 0), by = .(State)]
+        care_measures_data_2 <- care_measures_data_2[order(State , `heart failure`)]
+        care_measures_data_2 <- care_measures_data_2[,Rank := round(frank(`heart failure`) , 0), by = .(State)]
+        care_measures_data_2 <- care_measures_data_2[order(Rank)]
+        if( num == 'best'){
+            outcome_final <-  head(care_measures_data_2[Rank == 1,] , 1)
+        }else if(num == "worst"){
+            outcome_final <-  head(care_measures_data_2[Rank == max(care_measures_data_2$Rank),] , 1)
             
-        }
+        }else{
+            outcome_final <-  head(care_measures_data_2[Rank == num,] , 1)
+            
+        }   
         
-        outcome_final <-  head(care_measures_data_2 , 4) 
+        
     } else{
+        
+        
         care_measures_data_2 <- care_measures_data_2[order(State , `pneumonia`)]
-        if(num == "best"){
-            care_measures_data_2 <- care_measures_data_2[order(State , `pneumonia`)]
-            care_measures_data_2 <- care_measures_data_2[,Rank := round(frank(`pneumonia`) , 0), by = .(State)]
-        }else{
-            care_measures_data_2 <- care_measures_data_2[order(State , - `pneumonia`)]
-            care_measures_data_2 <- care_measures_data_2[,Rank := round(frank(`pneumonia`) , 0), by = .(State)]
+        care_measures_data_2 <- care_measures_data_2[order(State , `pneumonia`)]
+        care_measures_data_2 <- care_measures_data_2[,Rank := round(frank(`pneumonia`) , 0), by = .(State)]
+        care_measures_data_2 <- care_measures_data_2[order(Rank)]
+        if( num == 'best'){
+            outcome_final <-  head(care_measures_data_2[Rank == 1,] , 1)
+        }else if(num == "worst"){
+            outcome_final <-  head(care_measures_data_2[Rank == max(care_measures_data_2$Rank),] , 1)
             
-        }
+        }else{
+            outcome_final <-  head(care_measures_data_2[Rank == num,] , 1)
+            
+        } 
         
     }
         
@@ -87,6 +102,9 @@ rankhospital <- function(state = 'TX', outcome = 'heart failure', num = "worst" 
     
     return(outcome_final)
    
+  
     
+    
+# end function
 }
 
