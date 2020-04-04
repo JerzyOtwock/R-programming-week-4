@@ -1,5 +1,5 @@
 
-rankall <- function( outcome = 'pneumonia', num = "worst" ) {
+rankall <- function( outcome = 'heart attack', num = 20 ) {
     library(data.table)
     library(dplyr)
     
@@ -31,7 +31,7 @@ rankall <- function( outcome = 'pneumonia', num = "worst" ) {
         select( Hospital.Name, State, outcome ) 
     
     
-    # cleaning 
+
   
     
     
@@ -44,14 +44,18 @@ rankall <- function( outcome = 'pneumonia', num = "worst" ) {
       
     care_measures_data_2 <- care_measures_data_2[order(State , `heart attack`)]
     care_measures_data_2 <- care_measures_data_2[,Rank := round(frank(`heart attack`) , 0), by = .(State)]
-
+    care_measures_data_2[order( State,Rank)]
+  
     if( num == 'best'){
       outcome_final <-  care_measures_data_2[Rank == 1,] 
     }else if(num == "worst"){
       outcome_final <-   care_measures_data_2[rank_worst == Rank,] 
       
     }else{
+      
       outcome_final <-  care_measures_data_2[Rank == num,] 
+      outcome_final[, unique_no := frank(Hospital.Name), by = State]
+      outcome_final <- outcome_final[unique_no == 1,][order(State)]
       
     }
    
@@ -65,6 +69,8 @@ rankall <- function( outcome = 'pneumonia', num = "worst" ) {
       
       care_measures_data_2 <- care_measures_data_2[order(State , `heart failure`)]
       care_measures_data_2 <- care_measures_data_2[,Rank := round(frank(`heart failure`) , 0), by = .(State)]
+      care_measures_data_2[order(Rank, State)]
+
       
       if( num == 'best'){
         outcome_final <-  care_measures_data_2[Rank == 1,] 
@@ -73,6 +79,8 @@ rankall <- function( outcome = 'pneumonia', num = "worst" ) {
         
       }else{
         outcome_final <-  care_measures_data_2[Rank == num,] 
+        outcome_final[, unique_no := frank(Hospital.Name), by = State]
+        outcome_final <- outcome_final[unique_no == 1,][order(State)]
         
       }
         
@@ -87,7 +95,7 @@ rankall <- function( outcome = 'pneumonia', num = "worst" ) {
       care_measures_data_2 <- care_measures_data_2[order(State , `pneumonia`)]
       care_measures_data_2 <- care_measures_data_2[,Rank := round(frank(`pneumonia`) , 0), by = .(State)]
       care_measures_data_2[, rank_worst := max(Rank), by = .(State)]
-      care_measures_data_2[order(Rank, Hospital.Name)]
+      care_measures_data_2[order(Rank, State)]
       
       if( num == 'best'){
         outcome_final <-  care_measures_data_2[Rank == 1,] 
@@ -96,6 +104,8 @@ rankall <- function( outcome = 'pneumonia', num = "worst" ) {
         
       }else{
         outcome_final <-  care_measures_data_2[Rank == num,] 
+        outcome_final[, unique_no := frank(Hospital.Name), by = State]
+        outcome_final <- outcome_final[unique_no == 1,][order(State)] 
         
       }
         
